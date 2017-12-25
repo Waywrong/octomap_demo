@@ -1,11 +1,16 @@
 octomap_test
 ============
 
-### pub_pcl demo
+### demo
+```
+rosrun octomap_test pub_pcl 
+rosrun octop_test octomap_test 
+```
 ```
 rosrun octomap_test pub_pcl 
 roslaunch octomap_test octomap_server_test.launch
-
+```
+```
 octovis data/geb079.bt
 ```
 ```

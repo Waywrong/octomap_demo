@@ -16,7 +16,7 @@
     <param name="pointcloud_min_z" value="0" />
 
     <!-- topic from where pointcloud2 messages are subscribed -->
-    <remap from="cloud_in" to="/pub_pcl/output" />
+    <remap from="cloud_in" to="/camera/depth/points" />
 
   </node>
 </launch>

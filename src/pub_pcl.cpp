@@ -8,7 +8,8 @@ int main (int argc, char **argv)
 {  
   ros::init (argc, argv, "pub_pcl");  
   ros::NodeHandle nh;  
-  ros::Publisher pcl_pub = nh.advertise<sensor_msgs::PointCloud2> ("/pub_pcl/output", 10);  
+  ros::Publisher pcl_pub = 
+      nh.advertise<sensor_msgs::PointCloud2> ("/camera/depth/points", 10);  
 
   pcl::PointCloud<pcl::PointXYZ> cloud;  
   sensor_msgs::PointCloud2 output;  

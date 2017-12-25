@@ -1,0 +1,61 @@
+#include <ros/ros.h>
+#include <pcl/point_types.h>
+#include <pcl_conversions/pcl_conversions.h>
+#include <pcl_ros/point_cloud.h>
+#include "pcl_ros/transforms.h"
+#include <sensor_msgs/PointCloud2.h>
+#include <tf/transform_listener.h>
+#include <octomap/octomap.h>
+#include <octomap_msgs/Octomap.h>
+#include <octomap_msgs/conversions.h>
+
+#define OCTO_RESOLUTION 0.05
+typedef pcl::PointCloud<pcl::PointXYZ> PointCloud;
+
+ros::Publisher Octomap_pub;
+octomap::OcTree tree(OCTO_RESOLUTION);
+octomap_msgs::Octomap msg_octomap;
+
+void kinectCallbacks( const sensor_msgs::PointCloud2ConstPtr& cloud2_msg ) {
+  pcl::PCLPointCloud2 cloud2;
+  pcl_conversions::toPCL(*cloud2_msg, cloud2);
+  PointCloud* cloud_local (new PointCloud);
+  pcl::fromPCLPointCloud2(cloud2,*cloud_local);
+
+  for (auto p:cloud_local->points)
+    tree.updateNode( octomap::point3d(p.x, p.y, p.z), true);
+
+  tree.updateInnerOccupancy();
+  octomap_msgs::binaryMapToMsg(tree, msg_octomap);
+  msg_octomap.binary = 1;
+  msg_octomap.id = 1;
+  msg_octomap.resolution = OCTO_RESOLUTION;
+  msg_octomap.header.frame_id = "/map";
+  msg_octomap.header.stamp = ros::Time::now();
+  Octomap_pub.publish(msg_octomap);
+
+  delete cloud_local;
+}
+
+int main(int argc, char **argv)
+{
+  // Initialize node
+  ros::init(argc, argv, "octomap_test");
+  ros::NodeHandle nh;
+
+  // Subscripe topic
+  ros::Subscriber kinect_sub = 
+      nh.subscribe<sensor_msgs::PointCloud2>("/camera/depth/points", 1, kinectCallbacks);
+
+  // Advertise topic
+  Octomap_pub = 
+      nh.advertise<octomap_msgs::Octomap>("octomap_3d",1);
+
+  ros::Rate r(10);
+  while(ros::ok())
+  {
+    
+    r.sleep();
+    ros::spinOnce();
+  }
+}
