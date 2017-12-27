@@ -4,7 +4,7 @@ octomap_test
 ### demo
 ```
 rosrun octomap_test pub_pcl 
-rosrun octop_test octomap_test 
+rosrun octomap_test octomap_test 
 ```
 ```
 rosrun octomap_test pub_pcl 

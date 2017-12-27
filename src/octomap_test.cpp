@@ -8,24 +8,36 @@
 #include <octomap/octomap.h>
 #include <octomap_msgs/Octomap.h>
 #include <octomap_msgs/conversions.h>
+#include <octomap/ColorOcTree.h>
 
+#define OCTO_COLOR 
 #define OCTO_RESOLUTION 0.05
-typedef pcl::PointCloud<pcl::PointXYZ> PointCloud;
 
 ros::Publisher Octomap_pub;
-octomap::OcTree tree(OCTO_RESOLUTION);
-octomap_msgs::Octomap msg_octomap;
 
-void kinectCallbacks( const sensor_msgs::PointCloud2ConstPtr& cloud2_msg ) {
+void kinectCallbacks( const sensor_msgs::PointCloud2ConstPtr& cloud2_msg ) 
+{
   pcl::PCLPointCloud2 cloud2;
   pcl_conversions::toPCL(*cloud2_msg, cloud2);
-  PointCloud* cloud_local (new PointCloud);
+#ifdef OCTO_COLOR
+  pcl::PointCloud<pcl::PointXYZRGBA>* cloud_local(new pcl::PointCloud<pcl::PointXYZRGBA>);
   pcl::fromPCLPointCloud2(cloud2,*cloud_local);
-
+  octomap::ColorOcTree tree(OCTO_RESOLUTION);
+  for (auto p:cloud_local->points)
+  {
+    tree.updateNode( octomap::point3d(p.x, p.y, p.z), true);
+    tree.integrateNodeColor( p.x, p.y, p.z, p.r, p.g, p.b );
+  }
+#else//no color
+  pcl::PointCloud<pcl::PointXYZ>* cloud_local(new pcl::PointCloud<pcl::PointXYZ>);
+  pcl::fromPCLPointCloud2(cloud2,*cloud_local);
+  octomap::OcTree tree(OCTO_RESOLUTION);
   for (auto p:cloud_local->points)
     tree.updateNode( octomap::point3d(p.x, p.y, p.z), true);
+#endif
 
   tree.updateInnerOccupancy();
+  octomap_msgs::Octomap msg_octomap;
   octomap_msgs::binaryMapToMsg(tree, msg_octomap);
   msg_octomap.binary = 1;
   msg_octomap.id = 1;

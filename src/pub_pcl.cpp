@@ -1,8 +1,10 @@
-#include<ros/ros.h>  
-#include<pcl/point_cloud.h>  
-#include<pcl_conversions/pcl_conversions.h>  
-#include<sensor_msgs/PointCloud2.h>  
-#include<pcl/io/pcd_io.h>
+#include <ros/ros.h>  
+#include <pcl/point_cloud.h>  
+#include <pcl_conversions/pcl_conversions.h>  
+#include <sensor_msgs/PointCloud2.h>  
+#include <pcl/io/pcd_io.h>
+
+#define PCL_COLOR
 
 int main (int argc, char **argv)  
 {  
@@ -10,10 +12,15 @@ int main (int argc, char **argv)
   ros::NodeHandle nh;  
   ros::Publisher pcl_pub = 
       nh.advertise<sensor_msgs::PointCloud2> ("/camera/depth/points", 10);  
-
-  pcl::PointCloud<pcl::PointXYZ> cloud;  
-  sensor_msgs::PointCloud2 output;  
+   
+  sensor_msgs::PointCloud2 output; 
+#ifdef PCL_COLOR
+  pcl::PointCloud<pcl::PointXYZRGBA> cloud;  
+  pcl::io::loadPCDFile<pcl::PointXYZRGBA>("/home/peter/code/ira_slam/src/octomap_test/data/sample_color.pcd", cloud);  
+#else 
+  pcl::PointCloud<pcl::PointXYZ> cloud;
   pcl::io::loadPCDFile("/home/peter/code/ira_slam/src/octomap_test/data/office/office1.pcd", cloud);  
+#endif  
   pcl::toROSMsg(cloud,output);
 
   output.header.stamp=ros::Time::now();
