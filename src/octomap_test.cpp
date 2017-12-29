@@ -11,7 +11,7 @@
 #include <octomap/ColorOcTree.h>
 
 #define OCTO_COLOR 
-#define OCTO_RESOLUTION 0.05
+#define OCTO_RESOLUTION 0.1
 
 ros::Publisher Octomap_pub;
 
@@ -42,7 +42,7 @@ void kinectCallbacks( const sensor_msgs::PointCloud2ConstPtr& cloud2_msg )
   msg_octomap.binary = 1;
   msg_octomap.id = 1;
   msg_octomap.resolution = OCTO_RESOLUTION;
-  msg_octomap.header.frame_id = "/map";
+  msg_octomap.header.frame_id = "camera_depth_optical_frame";
   msg_octomap.header.stamp = ros::Time::now();
   Octomap_pub.publish(msg_octomap);
 

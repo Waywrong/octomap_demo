@@ -3,6 +3,10 @@ octomap_test
 
 ### demo
 ```
+roslaunch renbo_s penguin_nav_sim.launch
+rosrun octomap_test octomap_test 
+```
+```
 rosrun octomap_test pub_pcl 
 rosrun octomap_test octomap_test 
 ```

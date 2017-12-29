@@ -24,7 +24,7 @@ int main (int argc, char **argv)
   pcl::toROSMsg(cloud,output);
 
   output.header.stamp=ros::Time::now();
-  output.header.frame_id  ="camera_rgb_frame";
+  output.header.frame_id  ="camera_depth_frame";
 
   ros::Rate loop_rate(1);  
   while (ros::ok())  
