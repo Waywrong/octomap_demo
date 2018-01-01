@@ -16,6 +16,7 @@ roslaunch octomap_test octomap_server_test.launch
 ```
 ```
 octovis data/geb079.bt
+octovis sample.ot //can show color octomap
 ```
 ```
 http://blog.csdn.net/crp997576280/article/details/74605766

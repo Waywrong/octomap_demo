@@ -9,9 +9,10 @@
 #include <octomap_msgs/Octomap.h>
 #include <octomap_msgs/conversions.h>
 #include <octomap/ColorOcTree.h>
+#include <iostream>
 
 #define OCTO_COLOR 
-#define OCTO_RESOLUTION 0.1
+#define OCTO_RESOLUTION 0.01
 
 ros::Publisher Octomap_pub;
 
@@ -46,6 +47,9 @@ void kinectCallbacks( const sensor_msgs::PointCloud2ConstPtr& cloud2_msg )
   msg_octomap.header.stamp = ros::Time::now();
   Octomap_pub.publish(msg_octomap);
 
+#if 0
+  tree.write("sample.ot");//out put octomap file
+#endif
   delete cloud_local;
 }
 
