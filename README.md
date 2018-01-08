@@ -1,6 +1,12 @@
 octomap_test
 ============
-
+### install octomap
+```
+sudo apt-get install ros-indigo-octomap-ros 
+sudo apt-get install ros-indigo-octomap-msgs 
+sudo apt-get install ros-indigo-octomap-server
+sudo apt-get install ros-indigo-octomap-rviz-plugins
+```
 ### demo
 ```
 roslaunch renbo_s penguin_nav_sim.launch
